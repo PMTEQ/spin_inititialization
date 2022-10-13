@@ -60,16 +60,19 @@ class PH:
         ret=self.phdll.PH_SetRange(self.dev_number,self.range_res)
         
         ret=self.phdll.PH_SetOffset(self.dev_number,self.Offset)
-        
+                
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
-        
+
         time.sleep(2)
         
         print("Setting up done")
 
 
     def start_measure_with_plot(self, Tacq):
+        
+        ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
+        #in ms
         Counts_c=(c_uint*self.HISTCHAN)()
         Counts=np.zeros(self.HISTCHAN)
 
@@ -83,11 +86,11 @@ class PH:
         t = 4 * np.linspace(0,65535,65536) * 10**-3
         figure, ax = plt.subplots(figsize=(5,5))
         plot1, = ax.plot(t, Counts)
-        plt.ylim(0,10)
+        plt.ylim(0,100)
 
         plt.show()
         
-        while (time.time()-tdeb)<((Tacq/1000)+5):
+        while (time.time()-tdeb)<((Tacq/1000)+0.5):
             time.sleep(1)
             count_rate_APD=self.phdll.PH_GetCountRate(self.dev_number,1)
             print('APD count rate (en cps): ' + str(count_rate_APD)+ ' // Time remaining (en sec) : ' + str((Tacq/1000)-(time.time()-tdeb)))
@@ -101,9 +104,14 @@ class PH:
         
         ret=self.phdll.PH_StopMeas(self.dev_number,Tacq)
         test = (self.phdll.PH_CTCStatus(self.dev_number))
+        plt.close()
         print("End measures")
         return Counts,t
     def start_measure(self, Tacq):
+        
+        
+        ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
+
         Counts_c=(c_uint*self.HISTCHAN)()
         Counts=np.zeros(self.HISTCHAN)
 
@@ -114,7 +122,7 @@ class PH:
         t = 4 * np.linspace(0,65535,65536) * 10**-3
         
       
-        while (time.time()-tdeb)<((Tacq/1000)+5):
+        while (time.time()-tdeb)<((Tacq/1000)+0.5):
             time.sleep(1)
             count_rate_APD=self.phdll.PH_GetCountRate(self.dev_number,1)
             print('APD count rate (en cps): ' + str(count_rate_APD)+ ' // Time remaining (en sec) : ' + str((Tacq/1000)-(time.time()-tdeb)))
@@ -130,5 +138,3 @@ class PH:
 
     def close_APD(self):
         self.phdll.PH_CloseDevice(c_int(0))
-
-    
