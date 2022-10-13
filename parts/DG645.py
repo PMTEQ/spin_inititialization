@@ -75,7 +75,7 @@ class dg645():
         rep4=rep4.replace('\r','')
         print('Actual AOM delay is '+ rep4 +' s')
         
-    def set_larg_AOM(self,delay):
+    def set_larg_sync(self,delay):
         before=80e-9
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -89,6 +89,7 @@ class dg645():
         print('Actual AOM larger is '+ rep4 +' s')
         
     def set_delay_gate(self,delay):
+        #In sec
         before=0
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -116,23 +117,3 @@ class dg645():
         
     def close(self):
         self.tn.close()
-
-# tn.write(b'*IDN?\n')
-# rep3=tn.read_until(b'\r')
-
-
-
-# time.sleep(5)
-
-
-
-HOST = b"192.168.1.103"
-
-try :
-    mydg=dg645()
-    mydg.open_ip(HOST)
-    test=mydg.trig_freq_query()
-    mydg.set_larg_gate(200e-9)
-    mydg.close()
-except:
-    mydg.close()
