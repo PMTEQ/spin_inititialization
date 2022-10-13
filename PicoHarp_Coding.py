@@ -18,7 +18,7 @@ class PH:
 
         ret=self.phdll.PH_OpenDevice(self.dev_number,byref(self.serial))
       
-        if self.ret==0:
+        if ret==0:
             print("PicoHarp succesfully opened")
         else:
             print("PicoHarp opening failed")
@@ -29,8 +29,6 @@ class PH:
         ret=self.phdll.PH_Initialize(self.dev_number,self.MODE_HIST)
         print("Calibrating")
         ret=self.phdll.PH_Calibrate(self.dev_number)
-
-    def my_settings(self):
         
         # Settings for the measurement
 
@@ -51,11 +49,11 @@ class PH:
         self.DISCR_ch1=500
         
         print("Setting up channels")
-        ret=self.phdll.PH_SetCFDLevel(self.dev_number,self.c_int(0),self.DISCR_sync)
-        ret=self.phdll.PH_SetCFDLevel(self.dev_number,self.c_int(1),self.DISCR_ch1)
-        ret=self.phdll.PH_SetCFDZeroCross(self.dev_number,self.c_int(0),self.ZC_sync)
-        ret=self.phdll.PH_SetCFDZeroCross(self.dev_number,self.c_int(1),self.ZC_ch1)
-        ret=self.phdll.PH_SetSyncDiv(self.dev_number,self.c_int(1))
+        ret=self.phdll.PH_SetCFDLevel(self.dev_number,c_int(0),self.DISCR_sync)
+        ret=self.phdll.PH_SetCFDLevel(self.dev_number,c_int(1),self.DISCR_ch1)
+        ret=self.phdll.PH_SetCFDZeroCross(self.dev_number,c_int(0),self.ZC_sync)
+        ret=self.phdll.PH_SetCFDZeroCross(self.dev_number,c_int(1),self.ZC_ch1)
+        ret=self.phdll.PH_SetSyncDiv(self.dev_number,c_int(1))
         
         ret=self.phdll.PH_SetStopOverflow(self.dev_number,self.Stop_of_ok,self.Stop_count)
         
@@ -72,8 +70,8 @@ class PH:
 
     def start_measure_with_plot(self, Tacq):
 
-        Counts_c=(c_uint*HISTCHAN)()
-        Counts=np.zeros(HISTCHAN)
+        Counts_c=(c_uint*self.HISTCHAN)()
+        Counts=np.zeros(self.HISTCHAN)
 
         print("Starting measures")
         ret=self.phdll.PH_StartMeas(self.dev_number,Tacq)
@@ -104,10 +102,10 @@ class PH:
         ret=self.phdll.PH_StopMeas(self.dev_number,Tacq)
         test = (self.phdll.PH_CTCStatus(self.dev_number))
         print("End measures")
-
+        return Counts,t
     def start_measure(self, Tacq):
-        Counts_c=(c_uint*HISTCHAN)()
-        Counts=np.zeros(HISTCHAN)
+        Counts_c=(c_uint*self.HISTCHAN)()
+        Counts=np.zeros(self.HISTCHAN)
 
         print("Starting measures")
         ret=self.phdll.PH_StartMeas(self.dev_number,Tacq)
@@ -115,18 +113,22 @@ class PH:
 
         t = 4 * np.linspace(0,65535,65536) * 10**-3
         
+      
         while (time.time()-tdeb)<((Tacq/1000)+5):
             time.sleep(1)
-            count_rate_APD=phdll.PH_GetCountRate(self.dev_number,1)
+            count_rate_APD=self.phdll.PH_GetCountRate(self.dev_number,1)
             print('APD count rate (en cps): ' + str(count_rate_APD)+ ' // Time remaining (en sec) : ' + str((Tacq/1000)-(time.time()-tdeb)))
             ret=self.phdll.PH_GetBlock(self.dev_number,byref(Counts_c),0)
             for i in range(self.HISTCHAN):
                 Counts[i]=Counts_c[i]
-            
+           
+        
         ret=self.phdll.PH_StopMeas(self.dev_number,Tacq)
+        test = (self.phdll.PH_CTCStatus(self.dev_number))
         print("End measures")
+        return Counts,t
 
     def close_APD(self):
         self.phdll.PH_CloseDevice(c_int(0))
 
-
+    
