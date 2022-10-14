@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 HOST = b"192.168.1.103" #DG645 IP addres
-t_acquisition=300*1000 #in ms
+t_acquisition=30*1000 #in ms
 f_pulse=2e5
 T_pulse=1/f_pulse
 # try :
@@ -17,7 +17,7 @@ myph=PH()
 
 myph.open_ph()
 mydg.open_ip(HOST)
-delay_sync_trig=150*1e-9 #(-8.80000000000001e-08)
+delay_sync_trig=84*1e-9#150*1e-9 #(-8.80000000000001e-08)
 delay_sync_gate=-67.5*1e-9
 delay_gate_beg=delay_sync_gate-20*1e-9 #Delay gate/trigger for the first pulse
 
