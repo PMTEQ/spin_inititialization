@@ -7,9 +7,10 @@ import numpy as np
 class PH: 
     
     def __init__(self):
-        self.phdll = cdll.LoadLibrary("phlib.dll") 
+        self.phdll = cdll.LoadLibrary("phlib.dll") #Chargement de la dll
         
     def open_ph(self):
+        #Avec les paramètres trouvés grâce au logiciel constructeur, permet d'ouvrir et de paramétrer le PicoHarp dans python
         self.HISTCHAN  =  65536;	    
         self.MODE_HIST =  c_int(0);
         self.dev_number=c_int(0)
@@ -68,6 +69,7 @@ class PH:
         print("Setting up done")
 
     def set_range(self, user_range):
+        #Permet de paramétrer la résolution des mesures
         #Range:
             # 0, Resolution 4ps, Time span ; 262.1 ns
             # 1, Resolution 8ps, Time span ; 524.3 ns
@@ -82,7 +84,7 @@ class PH:
         ret=self.phdll.PH_SetRange(self.dev_number,c_int(user_range))
 
     def start_measure_with_plot(self, Tacq):
-        
+        #Réalise une mesure de la statistique temporelle moyennée pendant le temps T_acq. Toute les secondes une visualisation de cette statistique est mise à jour
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
         #in ms
@@ -122,6 +124,7 @@ class PH:
         return Counts,t
     def start_measure(self, Tacq):
         
+        #Réalise une mesure de la statistique temporelle moyennée pendant le temps T_acq. Il n'y a pas de visualisation de la statistique
         
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
@@ -151,4 +154,5 @@ class PH:
         return Counts,t
 
     def close_APD(self):
+        #Coupe la communication entre Python et le PicoHarp
         self.phdll.PH_CloseDevice(c_int(0))
