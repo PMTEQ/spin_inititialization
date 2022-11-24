@@ -10,11 +10,12 @@ import numpy as np
 #%% Important informations for the code
 
 HOST_DG645 = b"192.168.1.103" #DG645 IP addres
-COM_tombak = 'COM5'
+COM_tombak = 'COM5' #COM address for the aerodiode
 #%% Set the cycles options
 
-N_samples = 1000
+time_acq_one_delta = 60
 vect_delay = [1,10,20,30,40,50]
+
 
 #%% Opening the devices
 
@@ -43,7 +44,7 @@ mytombak.open_my_tombak(COM_tombak)
 
 myph.set_range(0)
 
-#%% Larger of the pulses
+#%% Set the largers of the pulses
 
 larg_sonde = 5 * 1e-6
 
