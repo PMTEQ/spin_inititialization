@@ -43,9 +43,14 @@ else:
 
 print("Initializing the program")
 
-#%% Ouverture du Keithley
+#%% Ouverture du Keithley et du LabJack
 try : 
-    d = u3.U3()
+    #Ouverture du LABJACK pour le spectro
+    #Le DAC0 envoie l'impulsion pour commencer l'acquisition d'une donnée
+    #AIN0 sert a checker le moment actuel de l'acquisiton
+    d = u3.U3() #Ouverture du LabJack U3-HV
+
+    
     rm = visa.ResourceManager()
     # print (rm.list_resources())
     
