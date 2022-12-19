@@ -7,10 +7,6 @@ import csv
 from os.path import exists
 import u3
 
- #Ouverture du LABJACK pour le spectro
-#Le DAC0 envoie l'impulsion pour commencer l'acquisition d'une donnée
-#AIN0 sert a checker le moment actuel de l'acquisiton
-
 #%% /!\ A remplir: 
     
 input("Welcome to the program allowing you to take IV curve and spectral datas. Please open synergy, then in the Experiment Setup panel load the IV_Curve_Labjack.xml experiment file. Choose your experimental details (dont forget to modify the accumulation number to the number of samples you want to take) then press Run in Synergy. When done press enter here.")
