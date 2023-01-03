@@ -9,7 +9,7 @@ larg_sonde = 5
 delay_pump_probe = 10
 larg_PH=8.389
 wait_gate_APD=0.02
-larg_gate_APD = larg_sonde + (2*20)*time_multi
+larg_gate_APD = larg_sonde + (2*0.02)
 wait_after_end=0.1
 time_between_PH_probe = (larg_PH-larg_sonde)/2
 
