@@ -5,6 +5,7 @@ from ctypes import *
 import sys
 import time
 import matplotlib.pyplot as plt
+from scipy.io import savemat
 import numpy as np
 
 #%% Important informations for the code
@@ -59,6 +60,15 @@ delay_sync_gate=-67.5*1e-9
 
 
 #%% Boucle de mesure
+
+
+a = np.arange(20)
+mdic = {"a": a, "label": "experiment"}
+mdic
+{'a': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+    17, 18, 19]),
+'label': 'experiment'}
+savemat("matlab_matrix.mat", mdic)
 
 #%% Close all
 
