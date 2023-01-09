@@ -84,7 +84,9 @@ class PH:
         ret=self.phdll.PH_SetRange(self.dev_number,c_int(user_range))
 
     def start_measure_with_plot(self, Tacq):
+        #Tacq en millisecondes
         #Réalise une mesure de la statistique temporelle moyennée pendant le temps T_acq. Toute les secondes une visualisation de cette statistique est mise à jour
+        #Renvoie un vecteur contenant les valeurs temporelles et un vecteur contenant le nombre de coups associé à ces valeurs temporelles.
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
         #in ms
@@ -123,8 +125,9 @@ class PH:
         print("End measures")
         return Counts,t
     def start_measure(self, Tacq):
-        
+        #Tacq en millisecondes
         #Réalise une mesure de la statistique temporelle moyennée pendant le temps T_acq. Il n'y a pas de visualisation de la statistique
+        #Renvoie un vecteur contenant les valeurs temporelles et un vecteur contenant le nombre de coups associé à ces valeurs temporelles.
         
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
