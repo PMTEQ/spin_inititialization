@@ -14,6 +14,8 @@ class dg645():
         rep=self.tn.read_until(b'\r')
         rep2=self.tn.read_until(b'\r')
         
+        return rep, rep2
+        
     def trig_freq_query(self):
         
         self.tn.write(b'TRAT?\n')
@@ -21,8 +23,10 @@ class dg645():
         rep4=rep4.decode('ascii')
         rep4=rep4.replace('\n','')
         rep4=rep4.replace('\r','')
-        
+
         return float(rep4)
+
+    
     def set_gate_APD_channel(self, channel):
         
         #1 BNC AB
@@ -34,21 +38,21 @@ class dg645():
 
         channel=str(channel)
         channel=channel.encode('ascii')
-        self.tn.write(b'LAMP '+channel+b'5.0'+b'\n')
+        self.tn.write(b'LAMP '+channel+b',5.0'+b'\n')
         self.tn.write(b'LAMP?'+channel+b'\n')
         rep_amp=self.tn.read_until(b'\r')
         rep_amp=rep_amp.decode('ascii')
         rep_amp=rep_amp.replace('\n','')
         rep_amp=rep_amp.replace('\r','')
         
-        self.tn.write(b'LOFF '+channel+b'-2.0'+b'\n')
+        self.tn.write(b'LOFF '+channel+b',-2.0'+b'\n')
         self.tn.write(b'LOFF?'+channel+b'\n')
         rep_off=self.tn.read_until(b'\r')
         rep_off=rep_off.decode('ascii')
         rep_off=rep_off.replace('\n','')
         rep_off=rep_off.replace('\r','')
         
-        self.tn.write(b'LPOL '+channel+b'1'+b'\n')
+        self.tn.write(b'LPOL '+channel+b',1'+b'\n')
         self.tn.write(b'LPOL?'+channel+b'\n')
         rep_pol=self.tn.read_until(b'\r')
         rep_pol=rep_pol.decode('ascii')
@@ -73,21 +77,21 @@ class dg645():
         
         channel=str(channel)
         channel=channel.encode('ascii')
-        self.tn.write(b'LAMP '+channel+b'0.6'+b'\n')
+        self.tn.write(b'LAMP '+channel+b',0.6'+b'\n')
         self.tn.write(b'LAMP?'+channel+b'\n')
         rep_amp=self.tn.read_until(b'\r')
         rep_amp=rep_amp.decode('ascii')
         rep_amp=rep_amp.replace('\n','')
         rep_amp=rep_amp.replace('\r','')
         
-        self.tn.write(b'LOFF '+channel+b'-0.6'+b'\n')
+        self.tn.write(b'LOFF '+channel+b',-0.6'+b'\n')
         self.tn.write(b'LOFF?'+channel+b'\n')
         rep_off=self.tn.read_until(b'\r')
         rep_off=rep_off.decode('ascii')
         rep_off=rep_off.replace('\n','')
         rep_off=rep_off.replace('\r','')
         
-        self.tn.write(b'LPOL '+channel+b'0'+b'\n')
+        self.tn.write(b'LPOL '+channel+b',0'+b'\n')
         self.tn.write(b'LPOL?'+channel+b'\n')
         rep_pol=self.tn.read_until(b'\r')
         rep_pol=rep_pol.decode('ascii')
@@ -113,21 +117,21 @@ class dg645():
         
         channel=str(channel)
         channel=channel.encode('ascii')
-        self.tn.write(b'LAMP '+channel+b'1'+b'\n')
+        self.tn.write(b'LAMP '+channel+b',1.0'+b'\n')
         self.tn.write(b'LAMP?'+channel+b'\n')
         rep_amp=self.tn.read_until(b'\r')
         rep_amp=rep_amp.decode('ascii')
         rep_amp=rep_amp.replace('\n','')
         rep_amp=rep_amp.replace('\r','')
         
-        self.tn.write(b'LOFF '+channel+b'0'+b'\n')
+        self.tn.write(b'LOFF '+channel+b',0'+b'\n')
         self.tn.write(b'LOFF?'+channel+b'\n')
         rep_off=self.tn.read_until(b'\r')
         rep_off=rep_off.decode('ascii')
         rep_off=rep_off.replace('\n','')
         rep_off=rep_off.replace('\r','')
         
-        self.tn.write(b'LPOL '+channel+b'1'+b'\n')
+        self.tn.write(b'LPOL '+channel+b',1'+b'\n')
         self.tn.write(b'LPOL?'+channel+b'\n')
         rep_pol=self.tn.read_until(b'\r')
         rep_pol=rep_pol.decode('ascii')
@@ -153,21 +157,21 @@ class dg645():
         
         channel=str(channel)
         channel=channel.encode('ascii')
-        self.tn.write(b'LAMP '+channel+b'3.4'+b'\n')
+        self.tn.write(b'LAMP '+channel+b',3.4'+b'\n')
         self.tn.write(b'LAMP?'+channel+b'\n')
         rep_amp=self.tn.read_until(b'\r')
         rep_amp=rep_amp.decode('ascii')
         rep_amp=rep_amp.replace('\n','')
         rep_amp=rep_amp.replace('\r','')
         
-        self.tn.write(b'LOFF '+channel+b'0'+b'\n')
+        self.tn.write(b'LOFF '+channel+b',0'+b'\n')
         self.tn.write(b'LOFF?'+channel+b'\n')
         rep_off=self.tn.read_until(b'\r')
         rep_off=rep_off.decode('ascii')
         rep_off=rep_off.replace('\n','')
         rep_off=rep_off.replace('\r','')
         
-        self.tn.write(b'LPOL '+channel+b'1'+b'\n')
+        self.tn.write(b'LPOL '+channel+b',1'+b'\n')
         self.tn.write(b'LPOL?'+channel+b'\n')
         rep_pol=self.tn.read_until(b'\r')
         rep_pol=rep_pol.decode('ascii')
@@ -421,14 +425,3 @@ class dg645():
     
     def close(self):
         self.tn.close()
-
-# tn.write(b'*IDN?\n')
-# rep3=tn.read_until(b'\r')
-
-
-
-# time.sleep(5)
-
-
-
-

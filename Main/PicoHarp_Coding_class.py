@@ -7,10 +7,9 @@ import numpy as np
 class PH: 
     
     def __init__(self):
-        self.phdll = cdll.LoadLibrary("phlib.dll") #Chargement de la dll
+        self.phdll = cdll.LoadLibrary("phlib.dll") 
         
     def open_ph(self):
-        #Avec les paramètres trouvés grâce au logiciel constructeur, permet d'ouvrir et de paramétrer le PicoHarp dans python
         self.HISTCHAN  =  65536;	    
         self.MODE_HIST =  c_int(0);
         self.dev_number=c_int(0)
@@ -69,7 +68,6 @@ class PH:
         print("Setting up done")
 
     def set_range(self, user_range):
-        #Permet de paramétrer la résolution des mesures
         #Range:
             # 0, Resolution 4ps, Time span ; 262.1 ns
             # 1, Resolution 8ps, Time span ; 524.3 ns
@@ -84,9 +82,9 @@ class PH:
         ret=self.phdll.PH_SetRange(self.dev_number,c_int(user_range))
 
     def start_measure_with_plot(self, Tacq):
-        #Tacq en millisecondes
-        #Réalise une mesure de la statistique temporelle moyennée pendant le temps T_acq. Toute les secondes une visualisation de cette statistique est mise à jour
-        #Renvoie un vecteur contenant les valeurs temporelles et un vecteur contenant le nombre de coups associé à ces valeurs temporelles.
+        
+        #Time of acquisition in seconds
+
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
         #in ms
@@ -94,13 +92,13 @@ class PH:
         Counts=np.zeros(self.HISTCHAN)
 
         print("Starting measures")
-        ret=self.phdll.PH_StartMeas(self.dev_number,Tacq)
+        ret=self.phdll.PH_StartMeas(self.dev_number,c_uint64(int(Tacq)))
         tdeb=time.time()
 
         plt.ion()
 
 
-        t = 2**(self.range_res) * np.linspace(0,65535,65536) * 10**-3
+        t = 2**((self.range_res)+2) * np.linspace(0,65535,65536) * 10**-6
         figure, ax = plt.subplots(figsize=(5,5))
         plot1, = ax.plot(t, Counts)
         plt.ylim(0,100)
@@ -119,15 +117,12 @@ class PH:
             figure.canvas.draw()
             figure.canvas.flush_events()
         
-        ret=self.phdll.PH_StopMeas(self.dev_number,Tacq)
+        ret=self.phdll.PH_StopMeas(self.dev_number,c_uint64(int(Tacq)))
         test = (self.phdll.PH_CTCStatus(self.dev_number))
         plt.close()
         print("End measures")
         return Counts,t
     def start_measure(self, Tacq):
-        #Tacq en millisecondes
-        #Réalise une mesure de la statistique temporelle moyennée pendant le temps T_acq. Il n'y a pas de visualisation de la statistique
-        #Renvoie un vecteur contenant les valeurs temporelles et un vecteur contenant le nombre de coups associé à ces valeurs temporelles.
         
         ret=self.phdll.PH_ClearHistMem(self.dev_number,0)
 
@@ -135,10 +130,10 @@ class PH:
         Counts=np.zeros(self.HISTCHAN)
 
         print("Starting measures")
-        ret=self.phdll.PH_StartMeas(self.dev_number,Tacq)
+        ret=self.phdll.PH_StartMeas(self.dev_number,c_uint64(int(Tacq)))
         tdeb=time.time()
 
-        t =  2**(self.range_res) * np.linspace(0,65535,65536) * 10**-3
+        t =  2**((self.range_res)+2) * np.linspace(0,65535,65536) * 10**-6
         
       
         while (time.time()-tdeb)<((Tacq/1000)+0.5):
@@ -151,11 +146,10 @@ class PH:
         for i in range(self.HISTCHAN):
             Counts[i]=Counts_c[i]
             
-        ret=self.phdll.PH_StopMeas(self.dev_number,Tacq)
+        ret=self.phdll.PH_StopMeas(self.dev_number,c_uint64(int(Tacq)))
         test = (self.phdll.PH_CTCStatus(self.dev_number))
         print("End measures")
         return Counts,t
 
     def close_APD(self):
-        #Coupe la communication entre Python et le PicoHarp
         self.phdll.PH_CloseDevice(c_int(0))

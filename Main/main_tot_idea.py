@@ -62,7 +62,7 @@ time_between_PH_probe = (larg_PH-larg_sonde)/2
 
 mydg.set_larg_APD(larg_gate_APD*time_multi) #Setting the larger of the gate
 mydg.set_larg_PH(80e-9)
-mydg.set_larg_AOM(length_pump*time_multi)
+mydg.set_larg_AOM(length_pump*time_multi) 
 mydg.set_larg_EOM(larg_sonde*time_multi)
 #%% Physical cable delays
 
