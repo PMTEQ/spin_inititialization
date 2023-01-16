@@ -11,20 +11,21 @@ import numpy as np
 #%% Important informations for the code
 
 HOST_DG645 = b"192.168.1.103" #DG645 IP addres
-COM_tombak = 'COM5' #COM address for the aerodiode
+#COM_tombak = 'COM5' #COM address for the aerodiode
+
 #%% Set the cycles options
-wanted_number_of_cycles=100000
-vect_delay = [1,10,20,30,40,50] # in us
+wanted_number_of_cycles=100000 #Number of cycles (periods) the PH will integrate on
+vect_delay = [1,10,20,30,40,50] # in us, #The different delays we want to measure between the end of the pump and the probe
 
 
 #%% Opening the devices
 
-mydg=dg645() 
-myph=PH()
+mydg=dg645() #Instanciating the code for controlling the DG645 : the impulsions generator
+myph=PH() #Instanciating the code for controlling the PicoHarp 
 # mytombak = my_tombak()
 
-myph.open_ph()
-mydg.open_ip(HOST_DG645)
+myph.open_ph() #Opening the connexion to the PicoHarp
+mydg.open_ip(HOST_DG645) #Opening the connexion to the DG645
 # mytombak.open_my_tombak(COM_tombak)
 
 #%% Set the resolution of the PH
@@ -41,42 +42,45 @@ mydg.open_ip(HOST_DG645)
 #/!\ Default range is 0
 
 #Pour des sondes de 5us pourquoi pas une reso de 128ps? 
-my_range=5
-myph.set_range(my_range)
-mydg.set_modu_AOM_channel(1)
-mydg.set_modu_EOM_channel(2)
-mydg.set_synchro_PH_channel(3)
-mydg.set_gate_APD_channel(4)
-#%% Set the largers of the pulses
+my_range=5 #Range we chose
+myph.set_range(my_range) #Set the resolution of the PH 
 
-time_unit="us"
-time_multi=1e-6
-length_pump = 50
-larg_sonde = 5
-larg_PH=t = 2**((my_range)+2) * 65535 * 10**-6
-wait_gate_APD=0.1
+mydg.set_modu_AOM_channel(1) # Indicating the channel the APD driver is connecting on
+mydg.set_modu_EOM_channel(2) # Indicating the channel the EOM is connecting on
+mydg.set_synchro_PH_channel(3) # Indicating the channel the PH trig channel is connecting on
+mydg.set_gate_APD_channel(4) ## Indicating the channel the APD gate channel is connecting on
+
+#%% Set the largers of the pulses we want
+
+time_unit="us" #All the times will be in this unit
+time_multi=1e-6 #Number we multiplicate seconds by to get this unity
+length_pump = 50 #Length of the pump (AOM modu)
+larg_sonde = 5 #Length of the probe (EOM modu)
+larg_PH=t = 2**((my_range)+2) * 65535 * 10**-6 #Length of the PH window (determined by the range)
+wait_gate_APD=0.1 #Time wait before the APD gating and the PH window to avoid overshoot
 larg_gate_APD = larg_PH + (2*wait_gate_APD) #Larger of the gate for the APD
-wait_after_end=1
+wait_after_end=1 # Time wait after closing APD gate
 time_between_PH_probe = (larg_PH-larg_sonde)/2
 
 
 mydg.set_larg_APD(larg_gate_APD*time_multi) #Setting the larger of the gate
-mydg.set_larg_PH(80e-9)
-mydg.set_larg_AOM(length_pump*time_multi) 
-mydg.set_larg_EOM(larg_sonde*time_multi)
-#%% Physical cable delays
+mydg.set_larg_PH(80e-9) #Setting the larger of the PH trigger (the legth does not count, only the change of state does)
+mydg.set_larg_AOM(length_pump*time_multi) #Setting the larger of the modulation of the AOM
+mydg.set_larg_EOM(larg_sonde*time_multi) #Setting the larger of the modulation of the EOM
 
-cable_PH_trig=0
-cable_probe_trig=(0)
-cable_APD_trig=0 #trig first
+#%% Physical cable delays
+#Assuming the delay for the AB cable is zero
+cable_PH_trig=0 #Delay between the trigger and the actual trggering at the end of the cable running to the PH (this number should be positive)
+cable_probe_trig=(0) #Delay between the trigger and the actual trggering at the end of the cable running to the EOM (this number should be positive)
+cable_APD_trig=0 #Delay between the trigger and the actual trggering at the end of the cable running to the APD (this number should be positive)
 
 
 
 #%% Boucle de mesure
-my_ind=0
 
 for i in range(len(vect_delay)):
-    ##times for DG645
+    
+    ##Setting the delays of the diverse impulsions and trig rate for the DG645
     delay_pump_probe = vect_delay[i]
     beg_probe=delay_pump_probe+length_pump
     beg_PH=beg_probe - time_between_PH_probe
@@ -91,11 +95,15 @@ for i in range(len(vect_delay)):
     f_pump = 1/(period_mes * time_multi)
     
     mydg.set_trig_rate(f_pump)
-    mydg.set_delay_APD((beg_APD-cable_APD_trig)*time_multi) #Setting the begining of the gate
+    mydg.set_delay_APD((beg_APD-cable_APD_trig)*time_multi)
     mydg.set_delay_PH((beg_PH-cable_PH_trig)*time_multi)
     mydg.set_delay_AOM(0)
     mydg.set_delay_EOM((beg_probe-cable_probe_trig)*time_multi)
-    [new_counts,new_t]=myph.start_measure_with_plot((t_acquisition)) #Taking a measure
+    
+    #Taking a measure with the PH
+    [new_counts,new_t]=myph.start_measure_with_plot((t_acquisition)) 
+    
+    #Arranging the datas into matrix for saving
     
     if (i>1):
         temp_t=np.zeros([1,np.shape((new_t))[0]])
