@@ -8,7 +8,7 @@ import telnetlib
 class dg645():
     
     def open_ip(self,HOST):
-        #Fonction permettant d'initier une connexion avec le DG645 possédant l'ip "IP"
+
         self.tn = telnetlib.Telnet()
         self.dg = self.tn.open(host=HOST, port=5024)
         rep=self.tn.read_until(b'\r')
@@ -17,7 +17,7 @@ class dg645():
         return rep, rep2
         
     def trig_freq_query(self):
-        # Fonction retournant la fréquence actuelle du trigger interne du DG645 (fréquence en Hz).
+        
         self.tn.write(b'TRAT?\n')
         rep4=self.tn.read_until(b'\r')
         rep4=rep4.decode('ascii')
@@ -28,8 +28,6 @@ class dg645():
 
     
     def set_gate_APD_channel(self, channel):
-        # Permet d'indiquer au DG645 de générer des impulsions possèdant la forme appropriée pour gater l'APD étant branché sur l'entrée \emph{channel}. \emph{channel} est un nombre entier prenant des valeurs entre 1 et 4 ( 1 étant l'entrée BNC AB, 2 étant l'entrée BNC CD, 3 étant l'entrée BNC EF, 4 étant l'entrée BNC GH).
-             
         
         #1 BNC AB
         #2 BNC CD
@@ -69,7 +67,7 @@ class dg645():
         print('Channel '+str(channel)+' amplitude is '+rep_amp+ ' V, offset is '+ rep_off +' V, polarity is ' + polar)
     
     def set_synchro_PH_channel(self, channel):
-        #Permet d'indiquer au DG645 de générer des impulsions possèdant la forme appropriée pour trigger le PicoHarp étant branché sur l'entrée \emph{channel}. \emph{channel} est un nombre entier prenant des valeurs entre 1 et 4 ( 1 étant l'entrée BNC AB, 2 étant l'entrée BNC CD, 3 étant l'entrée BNC EF, 4 étant l'entrée BNC GH).
+        
         #1 BNC AB
         #2 BNC CD
         #3 BNC EF
@@ -109,7 +107,7 @@ class dg645():
     
      
     def set_modu_AOM_channel(self, channel):
-        #Permet d'indiquer au DG645 de générer des impulsions possèdant la forme appropriée pour moduler le driver de l'AOM étant branché sur l'entrée \emph{channel}. \emph{channel} est un nombre entier prenant des valeurs entre 1 et 4 ( 1 étant l'entrée BNC AB, 2 étant l'entrée BNC CD, 3 étant l'entrée BNC EF, 4 étant l'entrée BNC GH).
+        
         #1 BNC AB
         #2 BNC CD
         #3 BNC EF
@@ -149,7 +147,7 @@ class dg645():
     
     
     def set_modu_EOM_channel(self, channel):
-        # Permet d'indiquer au DG645 de générer des impulsions possèdant la forme appropriée pour moduler l'EOM étant branché sur l'entrée \emph{channel}. \emph{channel} est un nombre entier prenant des valeurs entre 1 et 4 ( 1 étant l'entrée BNC AB, 2 étant l'entrée BNC CD, 3 étant l'entrée BNC EF, 4 étant l'entrée BNC GH).
+        
         #1 BNC AB
         #2 BNC CD
         #3 BNC EF
@@ -189,7 +187,6 @@ class dg645():
     
             
     def set_trig_rate(self,trig_rate):
-        #Permet de régler la fréquence interne du trigger à la fréquence trig_rate (en Hz)
         before=2e5
         trig_rate=str(trig_rate)
         trig_rate=trig_rate.encode('ascii')
@@ -202,7 +199,6 @@ class dg645():
         print('Actual frequency is '+ rep4 +' Hz')
        
     def set_delay_AB(self,delay):
-        #Permet de régler le délai entre le trigger et le déclenchement de la channel AB à \emph{delay} (en s).
         before=0
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -216,7 +212,6 @@ class dg645():
         print('Actual AB delay is '+ rep4 +' s')
         
     def set_larg_AB(self,delay):
-        #Permet de régler la largeur de l'impulsion de la channel AB à \emph{delay} (en s).
         before=80e-9
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -230,7 +225,6 @@ class dg645():
         print('Actual AB larger is '+ rep4 +' s')
         
     def set_delay_EF(self,delay):
-        ##Permet de régler le délai entre le trigger et le déclenchement de la channel EF à \emph{delay} (en s).
         before=0
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -244,7 +238,6 @@ class dg645():
         print('Actual EF delay is '+ rep4 +' s')
         
     def set_larg_EF(self,delay):
-        #Permet de régler la largeur de l'impulsion de la channel EF à \emph{delay} (en s).
         before=80e-9
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -258,7 +251,6 @@ class dg645():
         print('Actual EF larger is '+ rep4 +' s')
         
     def set_delay_GH(self,delay):
-        ##Permet de régler le délai entre le trigger et le déclenchement de la channel GH à \emph{delay} (en s).
         #In sec
         before=0
         delay=str(delay)
@@ -273,7 +265,6 @@ class dg645():
         print('Actual GH delay is '+ rep4 +' s')
         
     def set_larg_GH(self,delay):
-        #Permet de régler la largeur de l'impulsion de la channel GH à \emph{delay} (en s).
         before=80e-9
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -287,7 +278,6 @@ class dg645():
         print('Actual GH larger is '+ rep4 +' s')
     
     def set_delay_CD(self,delay):
-        #Permet de régler le délai entre le trigger et le déclenchement de la channel CD à \emph{delay} (en s).
         before=80e-9
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -301,7 +291,6 @@ class dg645():
         print('Actual CD larger is '+ rep4 +' s')
         
     def set_larg_CD(self,delay):
-        #Permet de régler la largeur de l'impulsion de la channel CD à \emph{delay} (en s).
         before=80e-9
         delay=str(delay)
         delay=delay.encode('ascii')
@@ -315,8 +304,6 @@ class dg645():
         print('Actual CD delay is '+ rep4 +' s')
     
     def set_larg_AOM(self,larg):
-        #Permet de régler la largeur de l'impulsion de l'AOM à \emph{delay} (en s).
-
         
         #1 BNC AB
         if self.str_channel_modu_AOM==1 :
@@ -333,9 +320,6 @@ class dg645():
             
     def set_delay_AOM(self,larg):
         
-        #Permet de régler le délai entre le trigger et le déclenchement de l'impulsion de l'AOM à \emph{delay} (en s).
-
-        
         #1 BNC AB
         if self.str_channel_modu_AOM==1 :
             self.set_delay_AB(larg)
@@ -350,8 +334,7 @@ class dg645():
             self.set_delay_GH(larg)
     
     def set_larg_APD(self,larg):
-        #Permet de régler la largeur de l'impulsion de gate l'APD à \emph{delay} (en s).
-
+        
         #1 BNC AB
         if self.str_channel_gate_APD==1 :
             self.set_larg_AB(larg)
@@ -366,7 +349,7 @@ class dg645():
             self.set_larg_GH(larg)
     
     def set_delay_APD(self,larg):
-        #Permet de régler le délai entre le trigger et le déclenchement de l'impulsion de gate l'APD à \emph{delay} (en s).
+        
         #1 BNC AB
         if self.str_channel_gate_APD==1 :
             self.set_delay_AB(larg)
@@ -381,7 +364,7 @@ class dg645():
             self.set_delay_GH(larg)
     
     def set_larg_PH(self,larg):
-        #Permet de régler la largeur de l'impulsion de trig du PH à \emph{delay} (en s).
+        
         #1 BNC AB
         if self.str_channel_synchro_PH==1 :
             self.set_larg_AB(larg)
@@ -396,7 +379,7 @@ class dg645():
             self.set_larg_GH(larg)
             
     def set_delay_PH(self,larg):
-        #Permet de régler le délai entre le trigger et le déclenchement de l'impulsion de trig du PH à \emph{delay} (en s).
+        
         #1 BNC AB
         if self.str_channel_synchro_PH==1 :
             self.set_delay_AB(larg)
@@ -411,7 +394,7 @@ class dg645():
             self.set_delay_GH(larg)
     
     def set_larg_EOM(self,larg):
-        #Permet de régler la largeur de l'impulsion de l'EOM à \emph{delay} (en s).
+        
         #1 BNC AB
         if self.str_channel_modu_EOM==1 :
             self.set_larg_AB(larg)
@@ -426,7 +409,7 @@ class dg645():
             self.set_larg_GH(larg)
             
     def set_delay_EOM(self,larg):
-        #Permet de régler le délai entre le trigger et le déclenchement de l'impulsion de l'EOM à \emph{delay} (en s).
+        
         #1 BNC AB
         if self.str_channel_modu_EOM==1 :
             self.set_delay_AB(larg)
@@ -441,5 +424,4 @@ class dg645():
             self.set_delay_GH(larg)
     
     def close(self):
-        #Permet de couper la connexion avec le DG645.
         self.tn.close()
